@@ -60,7 +60,7 @@ jobs:
     # Notify to Specific Topic of a Supergroup
     - name: Notify User on Telegram
       run: |
-            curl -s -X POST https://api.telegram.org/bot$TG_BOT_TOKEN/sendMessage -F chat_id=$TG_CHAT_ID -F message_thread_id=$TOPIC_ID \
+            curl -s -X POST https://api.telegram.org/bot$BOT_TOKEN/sendMessage -F chat_id=$TG_CHAT_ID -F message_thread_id=$TOPIC_ID \
              -F text='Docker Image Push Successfully '
 
 
