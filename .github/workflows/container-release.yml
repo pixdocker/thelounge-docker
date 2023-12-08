@@ -14,7 +14,7 @@ on:
 env:
   BOT_TOKEN: "${{ secrets.BOT_TOKEN }}"
   CHAT_ID: "${{ secrets.CHAT_ID }}"
-  TOPIC_ID: "{{ secrets.TOPIC_ID}}"
+  TOPIC_ID: "${{ secrets.TOPIC_ID}}"
 
 jobs:
   build-push:
@@ -62,7 +62,7 @@ jobs:
     - name: Notify User on Telegram
       run: |
             curl -s -X POST https://api.telegram.org/bot$BOT_TOKEN/sendMessage -F chat_id=$CHAT_ID -F message_thread_id=$TOPIC_ID \
-             -F text='Docker Image Push Successfully'
+             -F text='Docker Image Push Successfully' > /dev/null
 
 
 
