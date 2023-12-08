@@ -2,12 +2,13 @@ name: Docker Image CI
 
 on:
   push:
-    branches:
-      - "main"
+    branches: "main"
+    paths:
+      - 'docker/**'
+      - '.github/workflows/**'
 
   schedule:
     - cron:  '0 0 * * 5'
-
   workflow_dispatch:
 
 env:
@@ -60,8 +61,8 @@ jobs:
     # Notify to Specific Topic of a Supergroup
     - name: Notify User on Telegram
       run: |
-            curl -s -X POST https://api.telegram.org/bot$BOT_TOKEN/sendMessage -F chat_id=$TG_CHAT_ID -F message_thread_id=$TOPIC_ID \
-             -F text='Docker Image Push Successfully '
+            curl -s -X POST https://api.telegram.org/bot$BOT_TOKEN/sendMessage -F chat_id=$CHAT_ID -F message_thread_id=$TOPIC_ID \
+             -F text='Docker Image Push Successfully'
 
 
 
