@@ -11,19 +11,19 @@ VOLUME "${THELOUNGE_HOME}"
 ENV PORT 9000
 EXPOSE ${PORT}
 
-if [ -z ${THELOUNGE_VERSION+x} ]; then \
-    THELOUNGE_VERSION=$(curl -sX GET "https://api.github.com/repos/thelounge/thelounge/releases/latest" | jq -r '. | .tag_name'); \
-fi
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["thelounge", "start"]
-
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 # Install thelounge.
-RUN apk --update --no-cache --virtual build-deps add python3 build-base git && \
+RUN apk --update --no-cache --virtual build-deps add python3 build-base git jq && \
     ln -sf python3 /usr/bin/python && \
+    echo "Checking latest version" && \
+    if [ -z ${THELOUNGE_VERSION+x} ]; then \
+        THELOUNGE_VERSION=$(curl -sX GET "https://api.github.com/repos/thelounge/thelounge/releases/latest" | jq -r '. | .tag_name'); \
+    fi && \
     yarn --non-interactive --frozen-lockfile global add thelounge@${THELOUNGE_VERSION} && \
     yarn --non-interactive cache clean && \
     apk del --purge build-deps && \
     rm -rf /root/.cache /tmp /usr/bin/python
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["thelounge", "start"]

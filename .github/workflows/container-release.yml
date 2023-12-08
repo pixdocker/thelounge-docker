@@ -1,0 +1,69 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - "main"
+
+  schedule:
+    - cron:  '0 0 * * 5'
+
+  workflow_dispatch:
+
+env:
+  BOT_TOKEN: "${{ secrets.BOT_TOKEN }}"
+  CHAT_ID: "${{ secrets.CHAT_ID }}"
+  TOPIC_ID: "{{ secrets.TOPIC_ID}}"
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: checkout repo
+      uses: actions/checkout@v4
+      with:
+        token: ${{ github.token }}
+
+    - name: "Cancelling duplicate workflow runs"
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        all_but_latest: true
+        access_token: ${{ github.token }}
+        
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to registry
+      uses: docker/login-action@v3
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: docker/Dockerfile
+        platforms: linux/amd64,linux/arm64/v8
+        labels: quay.expires-after=24w
+        push: true
+        tags: quay.io/${{ secrets.QUAY_USERNAME }}/thelounge:latest
+        build-args: release=1
+    
+    # Notify to Specific Topic of a Supergroup
+    - name: Notify User on Telegram
+      run: |
+            curl -s -X POST https://api.telegram.org/bot$TG_BOT_TOKEN/sendMessage -F chat_id=$TG_CHAT_ID -F message_thread_id=$TOPIC_ID \
+             -F text='Docker Image Push Successfully '
+
+
+
+
+
