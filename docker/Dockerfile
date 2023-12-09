@@ -11,8 +11,6 @@ VOLUME "${THELOUNGE_HOME}"
 ENV PORT 9000
 EXPOSE ${PORT}
 
-# COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
 # Install thelounge.
 RUN apk --update --no-cache --virtual build-deps add bash python3 build-base git jq curl && \
     ln -sf python3 /usr/bin/python && \
@@ -25,5 +23,6 @@ RUN apk --update --no-cache --virtual build-deps add bash python3 build-base git
     apk del --purge build-deps && \
     rm -rf /root/.cache /tmp /usr/bin/python
 
-# ENTRYPOINT ["docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["thelounge", "start"]
