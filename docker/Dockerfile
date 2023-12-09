@@ -11,7 +11,7 @@ ENV PORT 9000
 EXPOSE ${PORT}
 
 # Install thelounge.
-RUN apk --update --no-cache --virtual build-deps add bash python3 build-base git jq curl && \
+RUN apk --update --no-cache --virtual build-deps add python3 build-base git jq curl && \
     ln -sf python3 /usr/bin/python && \
     echo "Checking latest version" && \
     if [ -z ${THELOUNGE_VERSION+x} ]; then \
@@ -22,7 +22,7 @@ RUN apk --update --no-cache --virtual build-deps add bash python3 build-base git
     apk del --purge build-deps && \
     rm -rf /root/.cache /tmp /usr/bin/python
 
-# Create the entrypoint script using cat
+# Create the entrypoint script using cat 
 RUN cat > /usr/local/bin/docker-entrypoint.sh <<EOF
 #!/bin/sh
 
