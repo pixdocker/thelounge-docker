@@ -1,0 +1,10 @@
+version: '2'
+services:
+  thelounge:
+    image: quay.io/pixelpizza/thelounge:latest
+    container_name: thelounge
+    ports:
+      - "127.0.0.1:9000:9000" # Replace with "9000:9000" if you don't use a reverse proxy
+    restart: unless-stopped
+    volumes:
+      - ~/apps/thelounge:/var/opt/thelounge # bind lounge config from the host's file system
