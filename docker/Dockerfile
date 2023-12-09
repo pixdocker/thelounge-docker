@@ -34,8 +34,6 @@ fi
 exec "\$@"
 EOF
 
-# Set executable permissions
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-USER node
-CMD ["thelounge", "start"]
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+CMD ["docker-entrypoint.sh", "thelounge", "start"]
