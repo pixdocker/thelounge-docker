@@ -14,7 +14,7 @@ EXPOSE ${PORT}
 # COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 # Install thelounge.
-RUN apk --update --no-cache --virtual build-deps add python3 build-base git jq curl && \
+RUN apk --update --no-cache --virtual build-deps add bash python3 build-base git jq curl && \
     ln -sf python3 /usr/bin/python && \
     echo "Checking latest version" && \
     if [ -z ${THELOUNGE_VERSION+x} ]; then \
